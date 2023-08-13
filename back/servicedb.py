@@ -1,3 +1,4 @@
+'''Work with database'''
 from back.dbbase import Session, engine, Base, IntegrityError
 from back.dbfile import Dbfile
 
