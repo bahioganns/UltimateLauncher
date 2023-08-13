@@ -10,8 +10,6 @@ document.querySelector("button").onclick = function () {
     var sections = new Vue({
         el: '#sections',
         data: {
-
-
           sections: [
             { name: 'Игры' },
             { name: 'Работа' },
@@ -23,20 +21,15 @@ document.querySelector("button").onclick = function () {
       var app_list = new Vue({
         el: '#app_list',
         data: {
-          apps: [
-            { name: 'Opera' },
-            { name: 'League of Legend' },
-            { name: 'Steam' },
-            { name: 'VPN' }
-          ]
+          apps: []
         } ,
         methods: {
               openApp() {
                 alert("👋 I am opened.")
               }
         },
-        async mounted() {
-                info = await eel.get_files_json()()
-                alert(info)
+        async created() {
+            this.apps = JSON.parse(await eel.get_files_json()())
+            alert(this.apps)
         }
       })
