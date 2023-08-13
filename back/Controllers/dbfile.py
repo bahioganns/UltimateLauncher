@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date
+from sqlalchemy import Column, String, Integer
 
 from back.Controllers.dbbase import Base
 
@@ -7,7 +7,7 @@ class Dbfile(Base):
     __tablename__ = 'files'
 
     id = Column(Integer, primary_key=True)
-    path = Column(String)
+    path = Column(String, unique=True)
     file_name = Column(String)
     icon_name = Column(String)
     section_name = Column(String)
