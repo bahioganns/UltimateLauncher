@@ -8,6 +8,8 @@ import tkinter as tk
 from tkinter import filedialog
 
 
+#TODO move to db place
+#TODO: make error handling if db is empty
 @eel.expose
 def get_files_json():
     """Return all files from database"""
@@ -20,11 +22,10 @@ def get_files_json():
         result.append(temp)
     
     session.close()
-    jlist = []
-    for el in result:
-        jlist.append(json.dumps(el.to_json()))
-    return jlist
-
+ 
+    serialized_list = [file.to_json() for file in result]
+    json_string = json.dumps(serialized_list)
+    return json_string
 
 @eel.expose
 def execute_file(path):
