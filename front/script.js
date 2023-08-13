@@ -25,7 +25,11 @@ document.querySelector("button").onclick = function () {
         } ,
         methods: {
               openApp() {
-                alert("👋 I am opened.")
+                alert("i am opened")
+                //eel.execute_app()()
+              },
+              async addApp() {
+                this.apps.push({ name: "Opera"})
               }
         },
         async created() {
