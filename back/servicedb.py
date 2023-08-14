@@ -7,10 +7,9 @@ class Servicedb:
     '''Parenting class for all controllers.'''
 
     def __init__(self) -> None:
-        pass
+        Base.metadata.create_all(engine)
 
     def add_to_db(self, dbfile):
-        Base.metadata.create_all(engine)
         session = Session()
 
         try:
@@ -23,12 +22,12 @@ class Servicedb:
         finally:
             session.close()
 
-    def del_from_db(self, path):
-        Base.metadata.create_all(engine)
+    def del_from_db(self, id):
+        """Remove element from database by given id"""
         session = Session()
 
         try:
-            to_del = session.query(Dbfile).filter_by(path=path).first()
+            to_del = session.query(Dbfile).filter_by(id=id).first()
             if to_del:
                 session.delete(to_del)
                 session.commit()
@@ -40,8 +39,44 @@ class Servicedb:
         finally:
             session.close()
 
+    def get_files_list(self):
+        """Get list of all files in the database"""
+        session = Session()
+        files = session.query(Dbfile).all()
+        session.close()
+        return files
+
+    def get_amount(self):
+        """Get amount of files in database"""
+        session = Session()
+        result = session.query(Dbfile).count()
+        session.close()
+        return result
+
+    def remove_all(self):
+        """Remove all elements from database"""
+        session = Session()
+        session.query(Dbfile).delete()
+        session.commit()
+        session.close()
+
+    def get_path_by_id(self, id):
+        session = Session()
+
+        path = None
+        try:
+            file = session.query(Dbfile).filter_by(id=id).first()
+            if file:
+                path = file.path
+            else:
+                print("No such element in database.")
+        except Exception as e:
+            print("Error occurred while finging file by id:", str(e))
+        finally:
+            session.close()
+            return path
+
     def change_existing(self, path):
-        Base.metadata.create_all(engine)
         session = Session()
         session.close()
 
