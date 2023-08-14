@@ -15,12 +15,12 @@
           apps: []
         } ,
         methods: {
-              openApp(number) {
-                alert("i am opened " + number)
-                //eel.execute_app()()
+              openApp(id) {
+                eel.open_file(id)()
               },
               async addApp() {
-                this.apps.push({name: "inserter"})
+                eel.add_new_file()()
+                this.apps = JSON.parse(await eel.get_files_json()())
               }
         },
         async created() {
