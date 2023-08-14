@@ -15,11 +15,12 @@
           apps: []
         } ,
         methods: {
-              openApp() {
-                alert("i am opened")
+              openApp(number) {
+                alert("i am opened " + number)
                 //eel.execute_app()()
               },
               async addApp() {
+                this.apps.push({name: "inserter"})
               }
         },
         async created() {

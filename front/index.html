@@ -41,24 +41,27 @@
 		</li>
 	</ul>
 
-	<div class="container" id="app_list">
-		<div class="row app-ellement" v-for="app in apps">
-			<button type="button" class="btn btn-outline-primary" style="height: 5rem;" v-on:click="openApp()">
-				<div class="container">
-					<div class="row row-cols-8">
-						<div class="col-1">
-							<img src="operaicon.png" class="app-icon">
-						</div>
-						<div class="col-7" style="text-align: left;">
-							<h5 class="app-title_text">{{ app.name }}</h5>
+	<div id="app_list">
+		<div class="container" >
+			<div class="row app-ellement" v-for="app in apps">
+				<button type="button" class="btn btn-outline-primary" style="height: 5rem;" v-on:click="openApp(app.name)">
+					<div class="container">
+						<div class="row row-cols-8">
+							<div class="col-1">
+								<img src="operaicon.png" class="app-icon">
+							</div>
+							<div class="col-7" style="text-align: left;">
+								<h5 class="app-title_text">{{ app.name }}</h5>
+							</div>
 						</div>
 					</div>
-				</div>
-			</button>
+				</button>
+			</div>
 		</div>
+	
+		<button type="button" class="btn btn-outline-primary" v-on:click="addApp()">Добавить приложение</button>
 	</div>
 
-	<!-- <button type="button" class="btn btn-outline-primary" id="app_list" v-on:click="addApp()">Добавить приложение</button> -->
 
 	<script type="text/javascript" src="../eel.js"></script>
 	<script src="./script.js"></script>
