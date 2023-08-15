@@ -67,12 +67,12 @@
 						<button class="w-100 btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 2.5rem; border-top-left-radius: 0; border-bottom-left-radius: 0">
 						</button>
 						<ul class="dropdown-menu">
-						  <li><a class="dropdown-item" href="#">Rename</a></li>
+						  <li><a class="dropdown-item" href="#" v-on:click="renameApp(app.id)">Rename</a></li>
 						  <li><a class="dropdown-item" href="#">Change icon</a></li>
 						  <li><a class="dropdown-item" href="#">Move to section</a></li>
 						  <li><a class="dropdown-item" href="#">Remove from section</a></li>
-						  <li><a class="dropdown-item" href="#">Open containing direcory</a></li>
-						  <li><a class="dropdown-item" href="#">Delete</a></li>
+						  <li><a class="dropdown-item" href="#" v-on:click="openDirectory(app.id)">Open containing direcory</a></li>
+						  <li><a class="dropdown-item" href="#" v-on:click="deleteApp(app.id)">Delete</a></li>
 						</ul>
 					</div>
 				</div>

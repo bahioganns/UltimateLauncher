@@ -98,6 +98,7 @@ def change_name(id, new_name):
 @eel.expose
 def open_containing_directory(id):
     """Open directory containing the file by id"""
+    #TODO fix
     serv = Servicedb()
     error = ""
     path_to_file = serv.get_path_by_id(id)
