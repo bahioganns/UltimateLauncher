@@ -18,27 +18,23 @@ def get_files_json():
     return json_string
 
 
-def open_ex_file(path):
-    """Execute process by given id"""
-    subprocess.Popen(path)
+# probably it con be stored somewhere but not be called every time
+def get_ex_extentions_list():
+    pathext = os.environ.get('PATHEXT', '').split(os.pathsep)
+    return [ext.lower() for ext in pathext]
 
 
-def open_nonex_file(path):
-    """Open not executable file with default app"""
-    os.startfile(path)
-
-
-# get if file is executable how aria said
+# can't use python functino to check if file is executable
 @eel.expose
 def open_file(id):
     """Execute if executable, open if not"""
     serv = Servicedb()
     path = serv.get_path_by_id(id)
     file_extension = os.path.splitext(path)[1]
-    if file_extension == "exe":
-        open_ex_file(path)
+    if file_extension in get_ex_extentions_list():
+        subprocess.Popen(path)
     else:
-        open_nonex_file(path)
+        os.startfile(path)
 
 
 def get_filepath_from_explorer():
@@ -49,7 +45,7 @@ def get_filepath_from_explorer():
     return file_path
 
 
-# need to update database on front
+# TODO: open explorer on top
 @eel.expose
 def add_new_file():
     """Add new file from the interface"""
