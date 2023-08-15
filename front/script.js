@@ -37,6 +37,5 @@
         },
         async created() {
             this.apps = JSON.parse(await eel.get_files_json()())
-            alert(this.apps)
         }
       })
