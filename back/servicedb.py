@@ -26,18 +26,20 @@ class Servicedb:
         """Remove element from database by given id"""
         session = Session()
 
+        error = ""
         try:
             to_del = session.query(Dbfile).filter_by(id=id).first()
             if to_del:
                 session.delete(to_del)
                 session.commit()
             else:
-                print("No such element in database.")
+                error = "No such element in database."
         except Exception as e:
             session.rollback()
-            print("Error occurred during deletion:", str(e))
+            error = "Error occurred during deletion:" + str(e)
         finally:
             session.close()
+            return error
 
     def get_files_list(self):
         """Get list of all files in the database"""
@@ -75,6 +77,28 @@ class Servicedb:
         finally:
             session.close()
             return path
+    
+    def change_name(self, id, new_name):
+        """Change name of file by given id"""
+        session = Session()
+
+        error = ""
+        if not new_name:
+            return "Name can't be empty"
+
+        try:
+            record = session.query(Dbfile).filter_by(id=id).first()
+            if record:
+                record.name = new_name
+                session.commit()
+            else:
+                error = "Can't find file with this id"
+        except Exception as e:
+            session.rollback()
+            error = "Error occurred while changing name by id:" + str(e)
+        finally:
+            session.close()
+            return error
 
     def change_existing(self, path):
         session = Session()
