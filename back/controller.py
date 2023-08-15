@@ -70,7 +70,6 @@ def get_filepath_from_explorer():
     return file_path
 
 
-# TODO: open explorer on top
 @eel.expose
 def add_new_file():
     """Add new file from the interface"""
@@ -85,4 +84,26 @@ def add_new_file():
 def del_file(id):
     """Delete file from the database by given id"""
     serv = Servicedb()
-    serv.del_from_db(id)
+    return serv.del_from_db(id)
+
+
+@eel.expose
+def change_name(id, new_name):
+    """Change name of file by given id and new name"""
+    serv = Servicedb()
+    error = serv.change_name(id, new_name)
+    return error
+
+
+@eel.expose
+def open_containing_directory(id):
+    """Open directory containing the file by id"""
+    serv = Servicedb()
+    error = ""
+    path_to_file = serv.get_path_by_id(id)
+    if path_to_file:
+        subprocess.Popen(f'explorer /select,"{path_to_file}"')
+    else:
+        error = "No path by given id found"
+
+    return error
