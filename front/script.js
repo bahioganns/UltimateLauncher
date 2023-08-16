@@ -1,18 +1,13 @@
-    var sections = new Vue({
-        el: '#sections',
-        data: {
-          sections: [
-            { name: 'Игры' },
-            { name: 'Работа' },
-            { name: 'Сети' }
-          ]
-        }
-      })
-      
+     
       var app_list = new Vue({
         el: '#app_list',
         data: {
-          apps: []
+          apps: [],
+          sections: [
+            { name: 'Игры', id: 0 },
+            { name: 'Работа', id: 1 },
+            { name: 'Сети', id: 2 }
+          ]
         } ,
         methods: {
               openApp(id) {
@@ -33,6 +28,10 @@
               },
               async openDirectory(id) {
                 eel.open_containing_directory(id)()
+              },
+              openSection(id) {
+                //eel.openGetSectionFiles(id)()
+                alert("sorry we cant open section " + id + " now")
               }
         },
         async created() {
