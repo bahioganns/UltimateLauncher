@@ -78,7 +78,7 @@ def open_containing_directory(id):
     #TODO fix
     serv = ServiceDbFile()
     error = ""
-    path_to_file = serv.get_path_by_id(id)#.replace("/", "\\")
+    path_to_file = serv.get_path_by_id(id).replace("/", "\\")
     if path_to_file:
         subprocess.Popen(f'explorer /select,"{path_to_file}"')
     else:
