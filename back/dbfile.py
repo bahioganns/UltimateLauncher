@@ -10,7 +10,7 @@ class DbFile(Base):
     id = Column(Integer, primary_key=True)
     path = Column(String, unique=True)
     name = Column(String)
-    icon_id = Column(Integer, ForeignKey('icons.id'), nullable=False)
+    icon_id = Column(Integer, ForeignKey('icons.id'))
     icon = relationship("DbIcon", lazy="joined")
     section_name = Column(String)
 
