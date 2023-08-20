@@ -1,21 +1,22 @@
 '''Work with database'''
 from back.dbbase import Session, engine, Base, IntegrityError
-from back.dbfile import Dbfile
+from back.dbfile import DbFile
 
 
-class Servicedb:
-    '''Parenting class for all controllers.'''
+class ServiceDbFile:
+    '''Operate with files table'''
 
     def __init__(self) -> None:
         Base.metadata.create_all(engine)
 
     def add_to_db(self, dbfile):
+        """Add to database given file"""
         session = Session()
 
         try:
-            to_add = Dbfile(dbfile.path, dbfile.name, dbfile.icon_name, dbfile.section_name)
-            session.add(to_add)
+            session.add(dbfile)
             session.commit()
+            session.refresh(dbfile)
         except IntegrityError:
             session.rollback()
             print("Element with the same path already exists.")
@@ -28,7 +29,7 @@ class Servicedb:
 
         error = ""
         try:
-            to_del = session.query(Dbfile).filter_by(id=id).first()
+            to_del = session.query(DbFile).filter_by(id=id).first()
             if to_del:
                 session.delete(to_del)
                 session.commit()
@@ -44,30 +45,31 @@ class Servicedb:
     def get_files_list(self):
         """Get list of all files in the database"""
         session = Session()
-        files = session.query(Dbfile).all()
+        files = session.query(DbFile).all()
         session.close()
         return files
 
     def get_amount(self):
         """Get amount of files in database"""
         session = Session()
-        result = session.query(Dbfile).count()
+        result = session.query(DbFile).count()
         session.close()
         return result
 
     def remove_all(self):
         """Remove all elements from database"""
         session = Session()
-        session.query(Dbfile).delete()
+        session.query(DbFile).delete()
         session.commit()
         session.close()
 
     def get_path_by_id(self, id):
+        """Get path from db by given id"""
         session = Session()
 
         path = None
         try:
-            file = session.query(Dbfile).filter_by(id=id).first()
+            file = session.query(DbFile).filter_by(id=id).first()
             if file:
                 path = file.path
             else:
@@ -87,7 +89,7 @@ class Servicedb:
             return "Name can't be empty"
 
         try:
-            record = session.query(Dbfile).filter_by(id=id).first()
+            record = session.query(DbFile).filter_by(id=id).first()
             if record:
                 record.name = new_name
                 session.commit()
@@ -99,17 +101,5 @@ class Servicedb:
         finally:
             session.close()
             return error
-
-    def change_existing(self, path):
-        session = Session()
-        session.close()
-
-    def add_to_section(self):
-        pass
-
-    def get_data(self):
-        pass
-
-    def change_db_data(self):
-        pass
+        
     
