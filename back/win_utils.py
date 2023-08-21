@@ -1,4 +1,4 @@
-"""Methods for controller"""
+"""Windows utils that are used in controller"""
 
 import tkinter as tk
 from tkinter import filedialog
@@ -76,13 +76,6 @@ def extract_icon_from_exe(icon_in_path):
     return icon_bytes
 
 
-def save_icon_from_bytes(bin_icon, file_path, file_format='PNG'):
-    """Save binary icon into png file, currently not in use"""
-    img = Image.frombytes('RGBA', (32, 32), bin_icon)
-    with open(file_path, 'wb') as file:
-        img.save(file, file_format)
-
-
 def get_default_windows_app(extension):
     """Get path to standart windows application for this extesion. Returns none if unsuccessfull"""
     """Can't find application for .png, .jpg, .dll and many others"""
@@ -117,4 +110,3 @@ def get_bin_icon_nonex(extension):
         return extract_icon_from_exe(path_to_def_app)
     else:
         return None
-

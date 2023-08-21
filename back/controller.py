@@ -1,13 +1,12 @@
 '''Processing incoming instructions from frontend and executing them'''
 from back.servicedbfile import ServiceDbFile, DbFile
 from back.servicedbicon import ServiceDbIcon, DbIcon
-from back.servicedbfile import Session
 import eel
 import json
 import os
 import subprocess
 
-from back.methods import get_ex_extentions_list, get_filepath_from_explorer, open_ex_file, open_nonex_file, extract_icon_from_exe, get_bin_icon_nonex
+from back.win_utils import get_ex_extentions_list, get_filepath_from_explorer, open_ex_file, open_nonex_file, extract_icon_from_exe, get_bin_icon_nonex
 
 
 @eel.expose

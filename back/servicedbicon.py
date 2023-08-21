@@ -8,7 +8,7 @@ class ServiceDbIcon:
 
     def __init__(self) -> None:
         Base.metadata.create_all(engine)
-    
+
     def add_to_db(self, icon):
         """Add given icon to the database"""
         session = Session()
@@ -23,10 +23,6 @@ class ServiceDbIcon:
         finally:
             session.close()
 
-    def del_from_db(self, id):
-        """Delete icon from database by given id"""
-        pass
-    
     def get_icons_list(self):
         """Get list of all icons in the database"""
         session = Session()
@@ -47,7 +43,7 @@ class ServiceDbIcon:
         session.query(DbIcon).delete()
         session.commit()
         session.close()
-    
+
     def icon_for_extension(self, extension):
         """Return icon for extension. Returns None if not present"""
         session = Session()
