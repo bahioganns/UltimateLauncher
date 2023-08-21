@@ -17,7 +17,6 @@ class ServiceDbIcon:
             session.add(icon)
             session.commit()
             session.refresh(icon)
-            print("id to add", icon.id)
         except Exception as e:
             session.rollback()
             print("Error occurred during adding new icon:" + str(e))

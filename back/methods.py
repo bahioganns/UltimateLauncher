@@ -1,18 +1,23 @@
+"""Methods for controller"""
+
 import tkinter as tk
 from tkinter import filedialog
 import subprocess
-import os
 import os
 import win32ui
 import win32gui
 import win32con
 import win32api
 from PIL import Image
+import shlex
+import winreg
+
 
 # probably it con be stored somewhere but not be called every time
 def get_ex_extentions_list():
+    """Get all extensions, that windows counts as executable"""
     pathext = os.environ.get('PATHEXT', '').split(os.pathsep)
-    return [ext.lower() for ext in pathext]
+    return [extension.lower() for extension in pathext]
 
 
 def open_ex_file(path):
@@ -47,6 +52,7 @@ def get_filepath_from_explorer():
     return file_path
 
 
+# Have to check if it's possible to get better quality from this function
 def extract_icon_from_exe(icon_in_path):
     """Given an icon path (exe file) extract it and output at the desired width/height as a png image. """
     ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
@@ -66,39 +72,49 @@ def extract_icon_from_exe(icon_in_path):
     bmpstr = hbmp.GetBitmapBits(True)
     icon = Image.frombuffer('RGBA', (32, 32), bmpstr, 'raw', 'BGRA', 0, 1)
 
-    # Сохранение иконки в виде двоичного файла
     icon_bytes = icon.tobytes()
     return icon_bytes
 
+
 def save_icon_from_bytes(bin_icon, file_path, file_format='PNG'):
-    """Save binary icon into png file"""
+    """Save binary icon into png file, currently not in use"""
     img = Image.frombytes('RGBA', (32, 32), bin_icon)
     with open(file_path, 'wb') as file:
         img.save(file, file_format)
 
 
-def get_standart_app(extension):
-    """Get path to the app, that windows uses to open files with such extensions"""
-    # Запускаем команду assoc для получения ассоциации расширения файла с типом файла
-    command = f'assoc {extension}'
-    result = subprocess.run(command, capture_output=True, text=True, shell=True)
+def get_default_windows_app(extension):
+    """Get path to standart windows application for this extesion. Returns none if unsuccessfull"""
+    """Can't find application for .png, .jpg, .dll and many others"""
+    try:  # UserChoice\ProgId lookup initial
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{}\UserChoice'.format(extension)) as key:
+            progid = winreg.QueryValueEx(key, 'ProgId')[0]
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Classes\{}\shell\open\command'.format(progid)) as key:
+            path = winreg.QueryValueEx(key, '')[0]
+    except:  # UserChoice\ProgId not found
+        try:
+            class_root = winreg.QueryValue(winreg.HKEY_CLASSES_ROOT, extension)
+            if not class_root:  # No reference from extension
+                class_root = extension  # Try direct lookup from extension
+            with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, r'{}\shell\open\command'.format(class_root)) as key:
+                path = winreg.QueryValueEx(key, '')[0]
+        except:  # Ext not found
+            path = None
 
-    # Получаем вывод команды и извлекаем тип файла
-    output = result.stdout.strip()
-    file_type = output.split('=')[1].strip()
+    if path:
+        path = os.path.expandvars(path)  # Expand env vars, e.g. %SystemRoot% for extension .txt
+        path = shlex.split(path, posix=False)[0]  # posix False for Windows operation
+        path = path.strip('"')  # Strip quotes
 
-    # Запускаем команду ftype для получения исполняемого файла, связанного с типом файла
-    command = f'ftype {file_type}'
-    result = subprocess.run(command, capture_output=True, text=True, shell=True)
-
-    # Получаем вывод команды и извлекаем исполняемый файл
-    output = result.stdout.strip()
-    executable = output.split('=')[1].strip().split(" ")[0]
-
-    return executable
+    return path
 
 
 def get_bin_icon_nonex(extension):
     """Get binary icon for non executable file"""
-    path_to_app = get_standart_app(extension=extension)
-    return extract_icon_from_exe(path_to_app)
+    path_to_def_app = get_default_windows_app(extension=extension)
+
+    if path_to_def_app:
+        return extract_icon_from_exe(path_to_def_app)
+    else:
+        return None
+
