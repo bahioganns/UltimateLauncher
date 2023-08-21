@@ -1,13 +1,12 @@
 '''Processing incoming instructions from frontend and executing them'''
 from back.servicedbfile import ServiceDbFile, DbFile
 from back.servicedbicon import ServiceDbIcon, DbIcon
-from back.servicedbfile import Session
 import eel
 import json
 import os
 import subprocess
 
-from back.methods import get_ex_extentions_list, get_filepath_from_explorer, open_ex_file, open_nonex_file, extract_icon_from_exe, get_bin_icon_nonex
+from back.win_utils import get_ex_extentions_list, get_filepath_from_explorer, open_ex_file, open_nonex_file, extract_icon_from_exe, get_bin_icon_nonex
 
 
 @eel.expose
@@ -20,7 +19,6 @@ def get_files_json():
     return json_string
 
 
-# can't use python functino to check if file is executable
 @eel.expose
 def open_file(id):
     """Execute if executable, open if not"""
@@ -41,17 +39,17 @@ def add_new_file():
         icon_serv = ServiceDbIcon()
         file = DbFile(path=path)
         file_extension = os.path.splitext(path)[1]
-        if file_extension in get_ex_extentions_list():
+
+        if file_extension in get_ex_extentions_list(): # Check if file is executable
             bin_icon = extract_icon_from_exe(path)
             icon = DbIcon(bin_icon=bin_icon, extension=file_extension)
         else:
-            icon = icon_serv.icon_for_extension(file_extension)
+            icon = icon_serv.icon_for_extension(file_extension) # Try to pull already existing icon for this extension.
             if not icon:
-                bin_icon = get_bin_icon_nonex(file_extension)
+                bin_icon = get_bin_icon_nonex(file_extension) # Try to get icon of default app. None if not successful.
                 icon = DbIcon(bin_icon=bin_icon, extension=file_extension)
         
         icon_serv.add_to_db(icon)
-
         file.icon = icon
         file_serv = ServiceDbFile()
         file_serv.add_to_db(file)
@@ -78,6 +76,7 @@ def open_containing_directory(id):
     #TODO fix
     serv = ServiceDbFile()
     error = ""
+    # For now this is the only place, where this error occured. So it works for now.
     path_to_file = serv.get_path_by_id(id).replace("/", "\\")
     if path_to_file:
         subprocess.Popen(f'explorer /select,"{path_to_file}"')

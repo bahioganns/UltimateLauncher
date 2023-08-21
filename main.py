@@ -2,6 +2,12 @@ import eel
 from back.servicedbfile import ServiceDbFile, DbFile
 from back.servicedbicon import ServiceDbIcon
 from back.controller import del_file
+import os
+import time
+
+# !!!!!!!!!!!!!!!!! We are deleting database every time
+# !!!!!!!!!!!!!!!!! It will be removed when icons will store there forever
+os.remove("memory")
 
 eel.init("front")
 serv = ServiceDbFile()

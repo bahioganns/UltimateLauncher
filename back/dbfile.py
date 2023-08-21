@@ -32,6 +32,6 @@ class DbFile(Base):
         return {
             "id" : self.id,
             "name" : self.name,
-            "icon_bin" : self.icon,
+            "icon_bin" : self.icon.bin_json(),
             "section_name" : self.section_name,
         }
