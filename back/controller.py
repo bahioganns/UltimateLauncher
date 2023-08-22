@@ -41,13 +41,13 @@ def add_new_file():
         file_extension = os.path.splitext(path)[1]
 
         if file_extension in get_ex_extentions_list(): # Check if file is executable
-            bin_icon = extract_icon_from_exe(path)
-            icon = DbIcon(bin_icon=bin_icon, extension=file_extension)
+            icon_path = extract_icon_from_exe(path)
+            icon = DbIcon(icon_path=icon_path, extension=file_extension)
         else:
             icon = icon_serv.icon_for_extension(file_extension) # Try to pull already existing icon for this extension.
             if not icon:
-                bin_icon = get_bin_icon_nonex(file_extension) # Try to get icon of default app. None if not successful.
-                icon = DbIcon(bin_icon=bin_icon, extension=file_extension)
+                icon_path = get_bin_icon_nonex(file_extension) # Try to get icon of default app. None if not successful.
+                icon = DbIcon(icon_path=icon_path, extension=file_extension)
         
         icon_serv.add_to_db(icon)
         file.icon = icon

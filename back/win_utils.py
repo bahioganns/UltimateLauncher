@@ -8,10 +8,14 @@ import win32ui
 import win32gui
 import win32con
 import win32api
-from PIL import Image
+from PIL import Image, ImageFilter, ImageEnhance
 import shlex
 import winreg
+import time
+import random
+import string
 
+__path_to_icons__ = "icons"
 
 # probably it con be stored somewhere but not be called every time
 def get_ex_extentions_list():
@@ -52,6 +56,14 @@ def get_filepath_from_explorer():
     return file_path
 
 
+def generate_unique_filename():
+    timestamp = str(int(time.time()))  # Get the current timestamp
+    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))  # Generate a random string
+
+    unique_filename = timestamp + "_" + random_string
+    return unique_filename
+
+
 # Have to check if it's possible to get better quality from this function
 def extract_icon_from_exe(icon_in_path):
     """Given an icon path (exe file) extract it and output at the desired width/height as a png image. """
@@ -63,17 +75,32 @@ def extract_icon_from_exe(icon_in_path):
 
     hdc = win32ui.CreateDCFromHandle( win32gui.GetDC(0) )
     hbmp = win32ui.CreateBitmap()
-    hbmp.CreateCompatibleBitmap( hdc, ico_x, ico_x )
+    hbmp.CreateCompatibleBitmap( hdc, ico_x, ico_y )
     hdc = hdc.CreateCompatibleDC()
 
     hdc.SelectObject( hbmp )
     hdc.DrawIcon( (0,0), large[0] )
 
     bmpstr = hbmp.GetBitmapBits(True)
-    icon = Image.frombuffer('RGBA', (32, 32), bmpstr, 'raw', 'BGRA', 0, 1)
+    bmpstr = hbmp.GetBitmapBits(True)
+    icon = Image.frombuffer(
+        'RGBA',
+        (ico_x,ico_y),
+        bmpstr, 'raw', 'BGRA', 0, 1
+    )
 
-    icon_bytes = icon.tobytes()
-    return icon_bytes
+    icon_name = generate_unique_filename()
+    full_outpath = os.path.join(__path_to_icons__, "{}.png".format(icon_name))
+
+    out_width, out_height = 64, 64
+    icon.resize((out_width, out_height))
+
+    # Resize the image. Won't work if use in icon itself
+    improved_icon = icon.resize((out_width, out_height), resample=Image.LANCZOS)
+
+    improved_icon.save(full_outpath)
+    #return the final path to the image
+    return full_outpath
 
 
 def get_default_windows_app(extension):
