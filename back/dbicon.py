@@ -6,21 +6,21 @@ class DbIcon(Base):
     __tablename__ = 'icons'
 
     id = Column(Integer, primary_key=True, autoincrement=True) # Don't know, what autoincr. is doing.
-    bin_icon = Column(String)
+    icon_path = Column(String)
     extension = Column(String)
 
-    def __init__(self, bin_icon, extension):
-        self.bin_icon = bin_icon
+    def __init__(self, icon_path, extension):
+        self.icon_path = icon_path
         self.extension = extension
 
     def __str__(self):
             """Make icon printable for debugging"""
             return (
                 f"Icon(id={self.id}, "
-                f"Icon(bin={self.bin_icon}, "
+                f"Icon(path={self.icon_path}, "
                 f"extension={self.extension})"
     )
 
-    def bin_json(self):
+    def to_json(self):
         """Make icon serialisable for json"""
-        return str(self.bin_icon)
+        return self.icon_path.split("\\")[-1] if self.icon_path else ""
