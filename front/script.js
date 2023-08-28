@@ -17,6 +17,11 @@
                 str = await eel.get_files_json()()
                 this.apps = JSON.parse(str)
               },
+              getAppIcon(id) {
+                str = this.apps[id - 1].icon_path
+                str = '/icons/' + this.apps[id - 1].icon_path
+                return str
+              },
               async addApp() {
                 eel.add_new_file()()
                 this.getDataFromBack();
