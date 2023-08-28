@@ -15,7 +15,7 @@ import time
 import random
 import string
 
-__path_to_icons__ = "icons"
+__path_to_icons__ = "front\\icons"
 
 # probably it con be stored somewhere but not be called every time
 def get_ex_extentions_list():
